@@ -13,7 +13,7 @@ import Footer from '../components/Footer'
 import { ENQUIRY_EMAIL } from '../lib/contact'
 
 const description =
-  'SIS Equipment Group provides electric motor, pump, gearbox, transformer, VSD and mining equipment supply, repair, overhaul and sourcing solutions throughout Australia.'
+  'SIS Equipment Group provides electric motor, generator, pump, gearbox, transformer, VSD, cable and mining equipment repair, supply, overhaul and sourcing solutions throughout Australia.'
 
 // Set NEXT_PUBLIC_SITE_URL once the production domain is known so the
 // canonical link and structured data point at real URLs.

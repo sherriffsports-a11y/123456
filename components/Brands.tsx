@@ -1,4 +1,5 @@
 import React from 'react'
+import ChipGrid from './ChipGrid'
 
 const brandGroups = [
   {
@@ -57,18 +58,13 @@ const Brands: React.FC = () => {
               <h3 className="text-xl font-semibold">{group.title}</h3>
               <p className="mt-1 text-sm text-sisSteel">{group.blurb}</p>
 
-              {/* Flex rather than grid so a trailing partial row centres instead
-                  of stranding one box on the left. */}
-              <ul className="mt-4 flex flex-wrap justify-center gap-3">
-                {group.brands.map((brand) => (
-                  <li
-                    key={brand}
-                    className="flex min-h-16 basis-[calc((100%_-_0.75rem)/2)] items-center justify-center rounded border border-gray-200 bg-white px-3 py-4 text-center text-sm font-semibold leading-snug text-sisCharcoal sm:basis-[calc((100%_-_1.5rem)/3)] lg:basis-[calc((100%_-_3rem)/5)]"
-                  >
-                    {brand}
-                  </li>
-                ))}
-              </ul>
+              <div className="mt-4">
+                <ChipGrid
+                  items={group.brands}
+                  columns={5}
+                  chipClassName="min-h-16 px-3 py-4 font-semibold"
+                />
+              </div>
             </div>
           ))}
         </div>

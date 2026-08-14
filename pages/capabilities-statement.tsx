@@ -44,10 +44,21 @@ export default function CapabilitiesStatement() {
             <div>
               <h3 className="font-semibold">Electric Motors</h3>
               <ul className="list-disc list-inside text-sisSteel">
+                <li>Electric motor repairs</li>
                 <li>New motor supply (LV & HV)</li>
                 <li>Motor rewinds and overhauls</li>
                 <li>Bearing replacement, dynamic balancing and testing</li>
                 <li>Replacement motor sourcing (OEM & aftermarket)</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold">Generators</h3>
+              <ul className="list-disc list-inside text-sisSteel">
+                <li>Generator repairs and overhauls</li>
+                <li>Alternator rewinds</li>
+                <li>Bearing replacement and testing</li>
+                <li>New generator supply and replacement sourcing</li>
               </ul>
             </div>
 
@@ -83,9 +94,19 @@ export default function CapabilitiesStatement() {
             <div>
               <h3 className="font-semibold">VSDs & Electrical</h3>
               <ul className="list-disc list-inside text-sisSteel">
-                <li>Variable speed drive supply and repairs</li>
+                <li>VSD repairs and supply</li>
                 <li>Industrial drive fault diagnosis and replacement</li>
                 <li>Electrical control equipment support</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold">Cable Repair & Supply</h3>
+              <ul className="list-disc list-inside text-sisSteel">
+                <li>Cable repairs, jointing and terminations</li>
+                <li>LV and HV cable</li>
+                <li>Testing</li>
+                <li>Replacement cable supply</li>
               </ul>
             </div>
 
@@ -125,7 +146,7 @@ export default function CapabilitiesStatement() {
 
         <section className="mt-6">
           <h2 className="text-xl font-semibold">Industries & Clients</h2>
-          <p className="mt-2 text-sisSteel">We support mining, power generation, manufacturing, mineral processing, water, sugar, marine, heavy industry, infrastructure and quarrying operations across Australia. Our experience is focused on critical rotating and electrical plant where uptime and technical rigour are essential.</p>
+          <p className="mt-2 text-sisSteel">We support mining, power generation, manufacturing, mineral processing, water, sugar, marine, cruise, heavy industry, infrastructure and quarrying operations across Australia. Our experience is focused on critical rotating and electrical plant where uptime and technical rigour are essential.</p>
         </section>
 
         <section className="mt-6">

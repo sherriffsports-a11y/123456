@@ -20,7 +20,7 @@ const Hero: React.FC = () => {
       <div className="relative max-w-6xl mx-auto py-28 px-6 lg:py-36">
         <h1 className="text-4xl lg:text-6xl font-bold tracking-tight">SIS EQUIPMENT GROUP</h1>
         <h2 className="mt-4 text-xl lg:text-2xl font-semibold">Mining &amp; Industrial Equipment Specialists</h2>
-        <p className="mt-4 text-sisSteelLight max-w-3xl">Electric Motors • Pumps • Gearboxes • Transformers • VSDs • Mining Components</p>
+        <p className="mt-4 text-sisSteelLight max-w-3xl">Electric Motors • Generators • Pumps • Gearboxes • Transformers • VSDs • Cables • Mining Components</p>
 
         <div className="mt-8 flex flex-col sm:flex-row gap-4">
           <a href="#request-quote" className="bg-sisAccent text-sisCharcoal font-semibold px-6 py-3 rounded text-center">REQUEST A QUOTE</a>
