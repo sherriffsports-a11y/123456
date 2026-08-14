@@ -1,6 +1,8 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
 import Nav from '../components/Nav'
+import { ENQUIRY_MAILTO } from '../lib/contact'
 
 export default function CapabilitiesStatement() {
   return (
@@ -22,7 +24,7 @@ export default function CapabilitiesStatement() {
             <h1 className="text-2xl font-bold mt-4">Capabilities Statement</h1>
             <p className="text-sm text-sisSteel mt-2">SIS Equipment Group — Mining & Industrial Equipment Specialists</p>
             <p className="text-sm text-sisSteel">Operated by Sherriff Industry Solutions Pty Ltd · ABN 81 668 877 183</p>
-            <p className="text-sm text-sisSteel mt-1">Brisbane, Queensland, Australia · Phone: +61 447 553 353 · info@sherriffindustrysolutions.com</p>
+            <p className="text-sm text-sisSteel mt-1">Brisbane, Queensland, Australia</p>
           </div>
 
           <div className="flex-shrink-0 print:hidden">
@@ -42,10 +44,21 @@ export default function CapabilitiesStatement() {
             <div>
               <h3 className="font-semibold">Electric Motors</h3>
               <ul className="list-disc list-inside text-sisSteel">
+                <li>Electric motor repairs</li>
                 <li>New motor supply (LV & HV)</li>
                 <li>Motor rewinds and overhauls</li>
                 <li>Bearing replacement, dynamic balancing and testing</li>
                 <li>Replacement motor sourcing (OEM & aftermarket)</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold">Generators</h3>
+              <ul className="list-disc list-inside text-sisSteel">
+                <li>Generator repairs and overhauls</li>
+                <li>Alternator rewinds</li>
+                <li>Bearing replacement and testing</li>
+                <li>New generator supply and replacement sourcing</li>
               </ul>
             </div>
 
@@ -81,9 +94,19 @@ export default function CapabilitiesStatement() {
             <div>
               <h3 className="font-semibold">VSDs & Electrical</h3>
               <ul className="list-disc list-inside text-sisSteel">
-                <li>Variable speed drive supply and repairs</li>
+                <li>VSD repairs and supply</li>
                 <li>Industrial drive fault diagnosis and replacement</li>
                 <li>Electrical control equipment support</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold">Cable Repair & Supply</h3>
+              <ul className="list-disc list-inside text-sisSteel">
+                <li>Cable repairs, jointing and terminations</li>
+                <li>LV and HV cable</li>
+                <li>Testing</li>
+                <li>Replacement cable supply</li>
               </ul>
             </div>
 
@@ -123,7 +146,7 @@ export default function CapabilitiesStatement() {
 
         <section className="mt-6">
           <h2 className="text-xl font-semibold">Industries & Clients</h2>
-          <p className="mt-2 text-sisSteel">We support mining, power generation, manufacturing, mineral processing, water, sugar, marine, heavy industry, infrastructure and quarrying operations across Australia. Our experience is focused on critical rotating and electrical plant where uptime and technical rigour are essential.</p>
+          <p className="mt-2 text-sisSteel">We support mining, power generation, manufacturing, mineral processing, water, sugar, marine, cruise, heavy industry, infrastructure and quarrying operations across Australia. Our experience is focused on critical rotating and electrical plant where uptime and technical rigour are essential.</p>
         </section>
 
         <section className="mt-6">
@@ -138,9 +161,11 @@ export default function CapabilitiesStatement() {
 
         <section className="mt-6">
           <h2 className="text-xl font-semibold">Contact</h2>
-          <p className="mt-2 text-sisSteel">For enquiries, technical discussions or to request a capability briefing and quotations please contact:</p>
-          <p className="mt-2 font-semibold">Email: <a href="mailto:info@sherriffindustrysolutions.com" className="text-sisCharcoal">info@sherriffindustrysolutions.com</a></p>
-          <p className="mt-1 font-semibold">Phone: <a href="tel:+61447553353" className="text-sisCharcoal">+61 447 553 353</a></p>
+          <p className="mt-2 text-sisSteel">For enquiries, technical discussions or to request a capability briefing and quotations, get in touch:</p>
+          <div className="mt-3 flex flex-wrap gap-3">
+            <a href={ENQUIRY_MAILTO} className="bg-sisAccent text-sisCharcoal font-semibold px-4 py-2 rounded">ENQUIRE BY EMAIL</a>
+            <Link href="/#request-quote" className="border border-sisSteel px-4 py-2 rounded">REQUEST A QUOTE</Link>
+          </div>
         </section>
 
         <footer className="mt-10 text-sm text-sisSteel">This capabilities statement is provided for information purposes. SIS Equipment Group does not claim specialist laboratory accreditations on this document; where accredited testing is required we will coordinate with accredited providers and disclose partner credentials as part of the project scope.</footer>

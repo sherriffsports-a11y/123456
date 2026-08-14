@@ -21,6 +21,12 @@ async function parseForm(req: NextApiRequest): Promise<{ fields: Fields; files: 
     maxFiles: MAX_FILES,
     maxFileSize: MAX_FILE_SIZE,
     maxTotalFileSize: MAX_TOTAL_FILE_SIZE,
+    // Browsers still submit a part for a file input the user left empty, and
+    // formidable rejects zero-byte files by default. Accept them here and drop
+    // them in flattenFiles, otherwise every enquiry without an attachment
+    // fails to parse.
+    allowEmptyFiles: true,
+    minFileSize: 0,
   })
   return form.parse(req).then(([fields, files]) => ({ fields, files }))
 }
@@ -30,6 +36,8 @@ function firstValue(value: string[] | undefined): string {
   return (value?.[0] ?? '').trim()
 }
 
+// Returns every parsed file, including the zero-byte placeholders, so the
+// caller can clean all of them up off disk.
 function flattenFiles(files: Files): File[] {
   return Object.values(files)
     .flatMap((entry) => entry ?? [])
@@ -104,7 +112,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ]
 
     const attachments = []
-    for (const file of uploads) {
+    for (const file of uploads.filter((file) => file.size > 0)) {
       try {
         const buffer = await readFile(file.filepath)
         attachments.push({

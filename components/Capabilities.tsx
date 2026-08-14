@@ -6,6 +6,7 @@ const capabilities = [
     id: 'motors',
     title: 'Electric Motors',
     items: [
+      'Electric motor repairs',
       'New electric motor supply',
       'Motor rewinds',
       'Motor overhauls',
@@ -16,6 +17,20 @@ const capabilities = [
       'Replacement motor sourcing'
     ],
     cta: 'Motor Repair Enquiry'
+  },
+  {
+    id: 'generators',
+    title: 'Generators',
+    items: [
+      'Generator repairs',
+      'Generator overhauls',
+      'Alternator rewinds',
+      'Bearing replacement',
+      'Testing',
+      'New generator supply',
+      'Replacement generator sourcing'
+    ],
+    cta: 'Generator Enquiry'
   },
   {
     id: 'pumps',
@@ -55,6 +70,33 @@ const capabilities = [
     cta: 'Transformer Enquiry'
   },
   {
+    id: 'vsd',
+    title: 'VSDs & Electrical',
+    items: [
+      'VSD repairs',
+      'VSD supply',
+      'Variable Speed Drives',
+      'Industrial drives',
+      'Electrical control equipment',
+      'Fault diagnosis',
+      'Replacement equipment'
+    ],
+    cta: 'VSD Repair Enquiry'
+  },
+  {
+    id: 'cables',
+    title: 'Cable Repair & Supply',
+    items: [
+      'Cable repairs',
+      'Cable jointing',
+      'Cable terminations',
+      'LV and HV cable',
+      'Testing',
+      'Replacement cable supply'
+    ],
+    cta: 'Cable Repair Enquiry'
+  },
+  {
     id: 'mining',
     title: 'Mining Equipment & Components',
     items: [
@@ -71,20 +113,6 @@ const capabilities = [
       'New and rebuilt assemblies'
     ],
     cta: 'Source Mining Components'
-  },
-  {
-    id: 'vsd',
-    title: 'VSDs & Electrical',
-    items: [
-      'Variable Speed Drives',
-      'VSD repairs',
-      'VSD supply',
-      'Industrial drives',
-      'Electrical control equipment',
-      'Fault diagnosis',
-      'Replacement equipment'
-    ],
-    cta: 'VSD Enquiry'
   },
   {
     id: 'field',
@@ -112,9 +140,9 @@ const Capabilities: React.FC = () => {
     <section id="capabilities" className="max-w-7xl mx-auto py-16 px-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sisSteel text-sm font-semibold">CAPABILITIES</h3>
+          <p className="text-sisSteel text-sm font-semibold">CAPABILITIES</p>
           <h2 className="text-3xl font-bold mt-2">What We Do</h2>
-          <p className="mt-4 text-sisSteel max-w-3xl">Specialist services across electric motors, pumps, gearboxes, transformers and industrial components for major mining, power and industrial customers.</p>
+          <p className="mt-4 text-sisSteel max-w-3xl">Specialist services across electric motors, generators, pumps, gearboxes, transformers, VSDs, cables and industrial components for major mining, power and industrial customers.</p>
         </div>
         <div className="">
           <Link href="/capabilities-statement" className="inline-block bg-sisAccent text-sisCharcoal font-semibold px-4 py-2 rounded">Download Capabilities Statement</Link>
@@ -123,12 +151,14 @@ const Capabilities: React.FC = () => {
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
         {capabilities.map(cap => (
-          <article key={cap.id} className="bg-white border shadow-sm rounded p-6">
-            <h4 className="font-semibold text-xl">{cap.title}</h4>
+          <article key={cap.id} className="flex flex-col bg-white border shadow-sm rounded p-6">
+            <h3 className="font-semibold text-xl">{cap.title}</h3>
             <ul className="mt-3 text-sm space-y-1 text-sisSteel">
-              {cap.items.slice(0, 8).map((it, idx) => <li key={idx}>• {it}</li>)}
+              {cap.items.map(item => <li key={item}>• {item}</li>)}
             </ul>
-            <div className="mt-4">
+            {/* Pushed to the bottom so the buttons line up across cards of
+                differing lengths. */}
+            <div className="mt-auto pt-4">
               <a href="#request-quote" className="inline-block bg-sisCharcoal text-white px-4 py-2 rounded">{cap.cta}</a>
             </div>
           </article>

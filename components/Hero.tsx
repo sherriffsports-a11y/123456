@@ -1,16 +1,19 @@
 import React from 'react'
 import Image from 'next/image'
+import heroImage from '../public/hero-electric-motor.jpg'
+import { ENQUIRY_MAILTO } from '../lib/contact'
 
 const Hero: React.FC = () => {
   return (
     <section id="home" className="relative bg-black text-white">
       <div className="absolute inset-0">
         <Image
-          src="https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1920&auto=format&fit=crop"
+          src={heroImage}
           alt=""
           aria-hidden="true"
           fill
           priority
+          placeholder="blur"
           sizes="100vw"
           className="object-cover opacity-80"
         />
@@ -19,11 +22,11 @@ const Hero: React.FC = () => {
       <div className="relative max-w-6xl mx-auto py-28 px-6 lg:py-36">
         <h1 className="text-4xl lg:text-6xl font-bold tracking-tight">SIS EQUIPMENT GROUP</h1>
         <h2 className="mt-4 text-xl lg:text-2xl font-semibold">Mining &amp; Industrial Equipment Specialists</h2>
-        <p className="mt-4 text-sisSteelLight max-w-3xl">Electric Motors • Pumps • Gearboxes • Transformers • VSDs • Mining Components</p>
+        <p className="mt-4 text-sisSteelLight max-w-3xl">Electric Motors • Generators • Pumps • Gearboxes • Transformers • VSDs • Cables • Mining Components</p>
 
         <div className="mt-8 flex flex-col sm:flex-row gap-4">
           <a href="#request-quote" className="bg-sisAccent text-sisCharcoal font-semibold px-6 py-3 rounded text-center">REQUEST A QUOTE</a>
-          <a href="tel:+61447553353" className="border border-white px-6 py-3 rounded text-center">CALL NOW</a>
+          <a href={ENQUIRY_MAILTO} className="border border-white px-6 py-3 rounded text-center">ENQUIRE BY EMAIL</a>
         </div>
 
         <p className="mt-6 text-sm text-sisSteelLight max-w-2xl">SIS Equipment Group provides equipment supply, repair, overhaul and sourcing solutions for mining, power generation and heavy industrial customers throughout Australia.</p>
