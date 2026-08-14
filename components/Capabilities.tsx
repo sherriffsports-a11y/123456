@@ -109,9 +109,16 @@ const capabilities = [
 const Capabilities: React.FC = () => {
   return (
     <section id="capabilities" className="max-w-7xl mx-auto py-16 px-6">
-      <h3 className="text-sisSteel text-sm font-semibold">CAPABILITIES</h3>
-      <h2 className="text-3xl font-bold mt-2">What We Do</h2>
-      <p className="mt-4 text-sisSteel max-w-3xl">Specialist services across electric motors, pumps, gearboxes, transformers and industrial components for major mining, power and industrial customers.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-sisSteel text-sm font-semibold">CAPABILITIES</h3>
+          <h2 className="text-3xl font-bold mt-2">What We Do</h2>
+          <p className="mt-4 text-sisSteel max-w-3xl">Specialist services across electric motors, pumps, gearboxes, transformers and industrial components for major mining, power and industrial customers.</p>
+        </div>
+        <div className="">
+          <a href="/capabilities-statement" className="inline-block bg-sisAccent text-black px-4 py-2 rounded">Download Capabilities Statement</a>
+        </div>
+      </div>
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
         {capabilities.map(cap => (
