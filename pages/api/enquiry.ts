@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import formidable, { File } from 'formidable'
-import fs from 'fs'
+import formidable, { type Fields, type Files, type File } from 'formidable'
+import { readFile, unlink } from 'fs/promises'
 import path from 'path'
 
 // Disable Next's default body parser
@@ -10,115 +10,146 @@ export const config = {
   },
 }
 
-const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY
-const ENQUIRY_TO_EMAIL = process.env.ENQUIRY_TO_EMAIL
-const ENQUIRY_FROM_EMAIL = process.env.ENQUIRY_FROM_EMAIL
+const MAX_FILE_SIZE = 10 * 1024 * 1024
+const MAX_FILES = 10
+// SendGrid rejects messages over 30MB. Base64 inflates payloads by ~4/3, so
+// keep the raw total well under that ceiling.
+const MAX_TOTAL_FILE_SIZE = 20 * 1024 * 1024
 
-async function parseForm(req: NextApiRequest): Promise<{ fields: any; files: Record<string, File | File[]> }> {
-  return new Promise((resolve, reject) => {
-    const form = formidable({ multiples: true })
-    form.parse(req as any, (err, fields, files) => {
-      if (err) return reject(err)
-      resolve({ fields, files })
-    })
+async function parseForm(req: NextApiRequest): Promise<{ fields: Fields; files: Files }> {
+  const form = formidable({
+    maxFiles: MAX_FILES,
+    maxFileSize: MAX_FILE_SIZE,
+    maxTotalFileSize: MAX_TOTAL_FILE_SIZE,
   })
+  return form.parse(req).then(([fields, files]) => ({ fields, files }))
 }
 
-function normalizeFiles(files: Record<string, any>): File[] {
-  const out: File[] = []
-  Object.keys(files || {}).forEach((key) => {
-    const val = files[key]
-    if (Array.isArray(val)) {
-      val.forEach((f) => out.push(f))
-    } else if (val && typeof val === 'object' && val.filepath) {
-      out.push(val)
-    }
-  })
-  return out
+// formidable v3 always returns fields as arrays, even for single values.
+function firstValue(value: string[] | undefined): string {
+  return (value?.[0] ?? '').trim()
+}
+
+function flattenFiles(files: Files): File[] {
+  return Object.values(files)
+    .flatMap((entry) => entry ?? [])
+    .filter((file) => Boolean(file?.filepath))
+}
+
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
+function escapeHtml(str: string) {
+  return str.replace(
+    /[&<>"']/g,
+    (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string,
+  )
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST')
+    return res.status(405).json({ error: 'Method not allowed' })
+  }
 
-  if (!SENDGRID_API_KEY || !ENQUIRY_TO_EMAIL || !ENQUIRY_FROM_EMAIL) {
-    console.error('Missing SendGrid configuration')
+  const apiKey = process.env.SENDGRID_API_KEY
+  const toEmail = process.env.ENQUIRY_TO_EMAIL
+  const fromEmail = process.env.ENQUIRY_FROM_EMAIL
+
+  if (!apiKey || !toEmail || !fromEmail) {
+    console.error(
+      'Enquiry form is not configured: SENDGRID_API_KEY, ENQUIRY_TO_EMAIL and ENQUIRY_FROM_EMAIL must all be set',
+    )
     return res.status(500).json({ error: 'Server not configured for email delivery' })
   }
 
+  let uploads: File[] = []
+
   try {
     const { fields, files } = await parseForm(req)
+    uploads = flattenFiles(files)
 
-    const name = (fields.name || '').toString()
-    const email = (fields.email || '').toString()
-    const description = (fields.description || '').toString()
+    const name = firstValue(fields.name)
+    const email = firstValue(fields.email)
+    const description = firstValue(fields.description)
 
     if (!name || !email || !description) {
       return res.status(400).json({ error: 'Missing required fields: name, email, description' })
     }
 
-    // Lazy import to keep cold-start small
-    const sgMail = (await import('@sendgrid/mail')).default
-    sgMail.setApiKey(SENDGRID_API_KEY)
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ error: 'Please provide a valid email address' })
+    }
 
-    const subject = `Enquiry from ${name} — ${fields.equipmentType || 'Equipment Enquiry'}`
+    const equipmentType = firstValue(fields.equipmentType)
+    const urgent = firstValue(fields.urgent) !== ''
 
-    const textParts: string[] = []
-    textParts.push(`Name: ${name}`)
-    if (fields.company) textParts.push(`Company: ${fields.company}`)
-    textParts.push(`Phone: ${fields.phone || ''}`)
-    textParts.push(`Email: ${email}`)
-    textParts.push(`Equipment Type: ${fields.equipmentType || ''}`)
-    textParts.push(`Manufacturer: ${fields.manufacturer || ''}`)
-    textParts.push(`Model: ${fields.model || ''}`)
-    textParts.push(`Serial: ${fields.serial || ''}`)
-    textParts.push(`Part number: ${fields.partNumber || ''}`)
-    textParts.push(`Site / Location: ${fields.site || ''}`)
-    textParts.push(`Urgent breakdown: ${fields.urgent ? 'Yes' : 'No'}`)
-    textParts.push('')
-    textParts.push('Description:')
-    textParts.push(description)
+    const detailLines = [
+      `Name: ${name}`,
+      `Company: ${firstValue(fields.company)}`,
+      `Phone: ${firstValue(fields.phone)}`,
+      `Email: ${email}`,
+      `Equipment Type: ${equipmentType}`,
+      `Manufacturer: ${firstValue(fields.manufacturer)}`,
+      `Model: ${firstValue(fields.model)}`,
+      `Serial: ${firstValue(fields.serial)}`,
+      `Part number: ${firstValue(fields.partNumber)}`,
+      `Site / Location: ${firstValue(fields.site)}`,
+      `Urgent breakdown: ${urgent ? 'Yes' : 'No'}`,
+      '',
+      'Description:',
+      description,
+    ]
 
-    const attachments: { content: string; filename: string; type?: string; disposition?: string }[] = []
-
-    const filesArray = normalizeFiles(files)
-    for (const file of filesArray) {
+    const attachments = []
+    for (const file of uploads) {
       try {
-        const buffer = fs.readFileSync(file.filepath)
-        const content = buffer.toString('base64')
-        const filename = (file.originalFilename || path.basename(file.filepath)).toString()
-        attachments.push({ content, filename, disposition: 'attachment' })
+        const buffer = await readFile(file.filepath)
+        attachments.push({
+          content: buffer.toString('base64'),
+          filename: file.originalFilename || path.basename(file.filepath),
+          type: file.mimetype || 'application/octet-stream',
+          disposition: 'attachment',
+        })
       } catch (err) {
         console.warn('Failed to read uploaded file for attachment', err)
       }
     }
 
-    const msg: any = {
-      to: ENQUIRY_TO_EMAIL,
-      from: ENQUIRY_FROM_EMAIL,
-      subject,
-      text: textParts.join('\n'),
-      html: `<pre style="font-family:monospace">${textParts.map(p => escapeHtml(p)).join('<br/>')}</pre>`,
-      attachments: attachments,
-    }
+    const sgMail = (await import('@sendgrid/mail')).default
+    sgMail.setApiKey(apiKey)
 
-    await sgMail.send(msg)
-
-    // cleanup temporary files
-    for (const file of filesArray) {
-      try {
-        fs.unlinkSync(file.filepath)
-      } catch (err) {
-        // ignore
-      }
-    }
+    await sgMail.send({
+      to: toEmail,
+      from: fromEmail,
+      replyTo: email,
+      subject: `${urgent ? '[URGENT] ' : ''}Enquiry from ${name} — ${equipmentType || 'Equipment Enquiry'}`,
+      text: detailLines.join('\n'),
+      html: `<pre style="font-family:monospace">${detailLines.map(escapeHtml).join('<br/>')}</pre>`,
+      attachments,
+    })
 
     return res.status(200).json({ status: 'received' })
   } catch (err) {
+    // Formidable flags every size/count limit breach with httpCode 413.
+    if ((err as { httpCode?: number }).httpCode === 413) {
+      return res.status(413).json({
+        error: `Attachments are too large. Send at most ${MAX_FILES} files, each under ${MAX_FILE_SIZE / 1024 / 1024}MB.`,
+      })
+    }
+
     console.error('Enquiry handler error', err)
     return res.status(500).json({ error: 'Internal server error' })
+  } finally {
+    // Formidable buffers uploads to disk, so clean up regardless of outcome.
+    await Promise.all(
+      uploads.map((file) =>
+        unlink(file.filepath).catch(() => {
+          /* already gone */
+        }),
+      ),
+    )
   }
-}
-
-function escapeHtml(str: string) {
-  return str.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string))
 }
