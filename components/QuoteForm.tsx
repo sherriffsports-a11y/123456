@@ -54,8 +54,13 @@ const QuoteForm: React.FC = () => {
         return
       }
 
-      const body = await res.json().catch(() => null)
-      setErrorMessage(body?.error ?? 'We could not send your enquiry. Please try again.')
+      // 4xx messages explain what the sender needs to change, so show them.
+      // 5xx messages describe an internal fault and mean nothing to a customer.
+      const body = res.status < 500 ? await res.json().catch(() => null) : null
+      setErrorMessage(
+        body?.error ??
+          'We could not send your enquiry right now. Please try again, or call us on +61 447 553 353.',
+      )
       setStatus('error')
     } catch {
       setErrorMessage('We could not reach the server. Please check your connection and try again.')
