@@ -48,17 +48,22 @@ const Brands: React.FC = () => {
           including OEM and aftermarket replacements where the original is no longer available.
         </p>
 
-        <div className="mt-10 space-y-10">
-          {brandGroups.map((group) => (
-            <div key={group.id}>
+        <div className="mt-10">
+          {brandGroups.map((group, index) => (
+            <div
+              key={group.id}
+              className={index > 0 ? 'mt-10 border-t border-gray-200 pt-10' : undefined}
+            >
               <h3 className="text-xl font-semibold">{group.title}</h3>
               <p className="mt-1 text-sm text-sisSteel">{group.blurb}</p>
 
-              <ul className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              {/* Flex rather than grid so a trailing partial row centres instead
+                  of stranding one box on the left. */}
+              <ul className="mt-4 flex flex-wrap justify-center gap-3">
                 {group.brands.map((brand) => (
                   <li
                     key={brand}
-                    className="flex min-h-16 items-center justify-center rounded border border-gray-200 bg-white px-3 py-4 text-center text-sm font-semibold leading-snug text-sisCharcoal"
+                    className="flex min-h-16 basis-[calc((100%_-_0.75rem)/2)] items-center justify-center rounded border border-gray-200 bg-white px-3 py-4 text-center text-sm font-semibold leading-snug text-sisCharcoal sm:basis-[calc((100%_-_1.5rem)/3)] lg:basis-[calc((100%_-_3rem)/5)]"
                   >
                     {brand}
                   </li>
