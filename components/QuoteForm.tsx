@@ -1,4 +1,5 @@
 import React, { useId, useState } from 'react'
+import { ENQUIRY_MAILTO } from '../lib/contact'
 
 type Status = 'idle' | 'sending' | 'sent' | 'error'
 
@@ -35,6 +36,7 @@ const inputClass =
 const QuoteForm: React.FC = () => {
   const [status, setStatus] = useState<Status>('idle')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [showEmailFallback, setShowEmailFallback] = useState(false)
   const fieldPrefix = useId()
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -44,6 +46,7 @@ const QuoteForm: React.FC = () => {
 
     setStatus('sending')
     setErrorMessage(null)
+    setShowEmailFallback(false)
 
     try {
       const res = await fetch('/api/enquiry', { method: 'POST', body: formData })
@@ -54,11 +57,16 @@ const QuoteForm: React.FC = () => {
         return
       }
 
-      const body = await res.json().catch(() => null)
-      setErrorMessage(body?.error ?? 'We could not send your enquiry. Please try again.')
+      // 4xx messages explain what the sender needs to change, so show them.
+      // 5xx messages describe an internal fault and mean nothing to a customer.
+      const body = res.status < 500 ? await res.json().catch(() => null) : null
+      setErrorMessage(body?.error ?? 'We could not send your enquiry right now. Please try again.')
+      // Only a fault on our side warrants pointing them at email instead.
+      setShowEmailFallback(!body?.error)
       setStatus('error')
     } catch {
       setErrorMessage('We could not reach the server. Please check your connection and try again.')
+      setShowEmailFallback(true)
       setStatus('error')
     }
   }
@@ -160,7 +168,19 @@ const QuoteForm: React.FC = () => {
                   Thanks — we&apos;ve received your enquiry and will respond shortly.
                 </span>
               )}
-              {status === 'error' && <span className="text-red-700">{errorMessage}</span>}
+              {status === 'error' && (
+                <span className="text-red-700">
+                  {errorMessage}
+                  {showEmailFallback && (
+                    <>
+                      {' '}
+                      <a href={ENQUIRY_MAILTO} className="underline">
+                        Send your enquiry by email instead.
+                      </a>
+                    </>
+                  )}
+                </span>
+              )}
             </p>
           </div>
         </form>

@@ -1,6 +1,8 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
 import Nav from '../components/Nav'
+import { ENQUIRY_MAILTO } from '../lib/contact'
 
 export default function CapabilitiesStatement() {
   return (
@@ -22,7 +24,7 @@ export default function CapabilitiesStatement() {
             <h1 className="text-2xl font-bold mt-4">Capabilities Statement</h1>
             <p className="text-sm text-sisSteel mt-2">SIS Equipment Group — Mining & Industrial Equipment Specialists</p>
             <p className="text-sm text-sisSteel">Operated by Sherriff Industry Solutions Pty Ltd · ABN 81 668 877 183</p>
-            <p className="text-sm text-sisSteel mt-1">Brisbane, Queensland, Australia · Phone: +61 447 553 353 · info@sherriffindustrysolutions.com</p>
+            <p className="text-sm text-sisSteel mt-1">Brisbane, Queensland, Australia</p>
           </div>
 
           <div className="flex-shrink-0 print:hidden">
@@ -138,9 +140,11 @@ export default function CapabilitiesStatement() {
 
         <section className="mt-6">
           <h2 className="text-xl font-semibold">Contact</h2>
-          <p className="mt-2 text-sisSteel">For enquiries, technical discussions or to request a capability briefing and quotations please contact:</p>
-          <p className="mt-2 font-semibold">Email: <a href="mailto:info@sherriffindustrysolutions.com" className="text-sisCharcoal">info@sherriffindustrysolutions.com</a></p>
-          <p className="mt-1 font-semibold">Phone: <a href="tel:+61447553353" className="text-sisCharcoal">+61 447 553 353</a></p>
+          <p className="mt-2 text-sisSteel">For enquiries, technical discussions or to request a capability briefing and quotations, get in touch:</p>
+          <div className="mt-3 flex flex-wrap gap-3">
+            <a href={ENQUIRY_MAILTO} className="bg-sisAccent text-sisCharcoal font-semibold px-4 py-2 rounded">ENQUIRE BY EMAIL</a>
+            <Link href="/#request-quote" className="border border-sisSteel px-4 py-2 rounded">REQUEST A QUOTE</Link>
+          </div>
         </section>
 
         <footer className="mt-10 text-sm text-sisSteel">This capabilities statement is provided for information purposes. SIS Equipment Group does not claim specialist laboratory accreditations on this document; where accredited testing is required we will coordinate with accredited providers and disclose partner credentials as part of the project scope.</footer>
