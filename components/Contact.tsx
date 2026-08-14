@@ -8,7 +8,6 @@ const Contact: React.FC = () => {
       <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-start gap-6">
         <div>
           <h3 className="font-bold text-xl">SIS Equipment Group</h3>
-          <p className="text-sm text-sisSteel mt-2">Brisbane, Queensland, Australia</p>
           <p className="text-sm text-sisSteel mt-2 max-w-md">
             Send us your equipment details and we&apos;ll review your requirement and respond.
           </p>

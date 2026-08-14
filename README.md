@@ -1,7 +1,7 @@
 # SIS Equipment Group — Landing Page
 
-Marketing site for SIS Equipment Group (operated by Sherriff Industry Solutions Pty Ltd), covering
-supply, repair, overhaul and sourcing of mining and industrial equipment.
+Marketing site for SIS Equipment Group, covering supply, repair, overhaul and sourcing of mining and
+industrial equipment.
 
 Built with [Next.js](https://nextjs.org/) (Pages Router), TypeScript and [Tailwind CSS](https://tailwindcss.com/).
 
@@ -34,7 +34,8 @@ The site is served at [http://localhost:3000](http://localhost:3000).
 
 ```
 components/    Landing page sections (Hero, Capabilities, QuoteForm, ...)
-pages/         Routes: / and /capabilities-statement
+lib/           contact.ts — the single source for the enquiry address
+pages/         Routes: /, /capabilities-statement, /privacy, /terms
 pages/api/     enquiry.ts — handles quote form submissions
 public/        Logo and favicon
 styles/        Tailwind entry point
@@ -87,8 +88,12 @@ Set the environment variables above in the host's project settings before deploy
 
 - **No spam protection.** The endpoint is unauthenticated and has no rate limiting or CAPTCHA. Add
   these before publicising the form.
-- **Footer legal links** (`#privacy`, `#terms`) are placeholders that point at sections which do not
-  exist yet.
+- **The Privacy Policy and Terms pages have not been reviewed by a lawyer.** They were written to
+  describe accurately what this site actually does, but they are not legal advice and should be
+  checked by a legal professional before the site goes live.
+- **Neither legal page names the operating entity or its ABN**, because those were deliberately
+  removed from public display. An Australian privacy policy would normally identify the entity
+  responsible for the information it collects, so consider adding it back on `/privacy`.
 - **The hero image is hotlinked from Unsplash.** Replace it with a licensed, self-hosted photograph
   before going live.
 - **Large attachments are emailed inline.** For bigger files, upload to object storage and email links

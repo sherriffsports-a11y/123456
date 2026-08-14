@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 
 const Footer: React.FC = () => {
   return (
@@ -7,15 +8,12 @@ const Footer: React.FC = () => {
         <div>
           <div className="font-bold">SIS Equipment Group</div>
           <div className="mt-1 text-sisSteelLight">Mining &amp; Industrial Equipment Specialists</div>
-          <div className="mt-2">Operated by Sherriff Industry Solutions Pty Ltd</div>
-          <div>ABN 81 668 877 183</div>
-          <div className="mt-2">Brisbane, Queensland, Australia</div>
         </div>
         <nav aria-label="Footer">
           <ul className="space-y-1">
-            <li><a href="#privacy" className="block text-sisSteelLight hover:text-white hover:underline">Privacy Policy</a></li>
-            <li><a href="#terms" className="block text-sisSteelLight hover:text-white hover:underline">Terms &amp; Conditions</a></li>
-            <li><a href="#contact" className="block text-sisSteelLight hover:text-white hover:underline">Contact</a></li>
+            <li><Link href="/privacy" className="block text-sisSteelLight hover:text-white hover:underline">Privacy Policy</Link></li>
+            <li><Link href="/terms" className="block text-sisSteelLight hover:text-white hover:underline">Terms &amp; Conditions</Link></li>
+            <li><Link href="/#contact" className="block text-sisSteelLight hover:text-white hover:underline">Contact</Link></li>
           </ul>
         </nav>
       </div>

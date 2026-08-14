@@ -24,12 +24,6 @@ const organizationSchema = {
   name: 'SIS Equipment Group',
   description,
   ...(siteUrl ? { url: siteUrl, logo: `${siteUrl}/logo.svg` } : {}),
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Brisbane',
-    addressRegion: 'QLD',
-    addressCountry: 'AU',
-  },
   contactPoint: [
     {
       '@type': 'ContactPoint',
