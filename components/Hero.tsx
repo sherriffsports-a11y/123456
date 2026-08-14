@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import { ENQUIRY_MAILTO } from '../lib/contact'
 
 const Hero: React.FC = () => {
   return (
@@ -23,7 +24,7 @@ const Hero: React.FC = () => {
 
         <div className="mt-8 flex flex-col sm:flex-row gap-4">
           <a href="#request-quote" className="bg-sisAccent text-sisCharcoal font-semibold px-6 py-3 rounded text-center">REQUEST A QUOTE</a>
-          <a href="tel:+61447553353" className="border border-white px-6 py-3 rounded text-center">CALL NOW</a>
+          <a href={ENQUIRY_MAILTO} className="border border-white px-6 py-3 rounded text-center">ENQUIRE BY EMAIL</a>
         </div>
 
         <p className="mt-6 text-sm text-sisSteelLight max-w-2xl">SIS Equipment Group provides equipment supply, repair, overhaul and sourcing solutions for mining, power generation and heavy industrial customers throughout Australia.</p>

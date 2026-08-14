@@ -9,6 +9,7 @@ import WhyUs from '../components/WhyUs'
 import QuoteForm from '../components/QuoteForm'
 import Contact from '../components/Contact'
 import Footer from '../components/Footer'
+import { ENQUIRY_EMAIL } from '../lib/contact'
 
 const description =
   'SIS Equipment Group provides electric motor, pump, gearbox, transformer, VSD and mining equipment supply, repair, overhaul and sourcing solutions throughout Australia.'
@@ -32,8 +33,7 @@ const organizationSchema = {
   contactPoint: [
     {
       '@type': 'ContactPoint',
-      telephone: '+61447553353',
-      email: 'info@sherriffindustrysolutions.com',
+      email: ENQUIRY_EMAIL,
       contactType: 'customer service',
       areaServed: 'AU',
     },
