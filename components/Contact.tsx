@@ -10,7 +10,7 @@ const Contact: React.FC = () => {
           <p className="text-sm mt-2">Phone: <a href="tel:+61447553353" className="text-sisCharcoal">+61 447 553 353</a></p>
           <p className="text-sm mt-1">Email: <a href="mailto:info@sherriffindustrysolutions.com" className="text-sisCharcoal">info@sherriffindustrysolutions.com</a></p>
           <div className="mt-4 flex gap-3">
-            <a href="tel:+61447553353" className="bg-sisAccent text-black px-4 py-2 rounded">CALL NOW</a>
+            <a href="tel:+61447553353" className="bg-sisAccent text-sisCharcoal font-semibold px-4 py-2 rounded">CALL NOW</a>
             <a href="mailto:info@sherriffindustrysolutions.com" className="border px-4 py-2 rounded">EMAIL US</a>
           </div>
         </div>

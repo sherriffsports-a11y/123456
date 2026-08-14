@@ -6,16 +6,18 @@ const Footer: React.FC = () => {
       <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-start gap-6 text-sm">
         <div>
           <div className="font-bold">SIS Equipment Group</div>
-          <div className="mt-1 text-sisSteel">Mining & Industrial Equipment Specialists</div>
+          <div className="mt-1 text-sisSteelLight">Mining &amp; Industrial Equipment Specialists</div>
           <div className="mt-2">Operated by Sherriff Industry Solutions Pty Ltd</div>
           <div>ABN 81 668 877 183</div>
           <div className="mt-2">Brisbane, Queensland, Australia</div>
         </div>
-        <div className="space-y-1">
-          <a href="#privacy" className="text-sisSteel">Privacy Policy</a>
-          <a href="#terms" className="text-sisSteel">Terms & Conditions</a>
-          <a href="#contact" className="text-sisSteel">Contact</a>
-        </div>
+        <nav aria-label="Footer">
+          <ul className="space-y-1">
+            <li><a href="#privacy" className="block text-sisSteelLight hover:text-white hover:underline">Privacy Policy</a></li>
+            <li><a href="#terms" className="block text-sisSteelLight hover:text-white hover:underline">Terms &amp; Conditions</a></li>
+            <li><a href="#contact" className="block text-sisSteelLight hover:text-white hover:underline">Contact</a></li>
+          </ul>
+        </nav>
       </div>
     </footer>
   )

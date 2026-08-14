@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 
 const capabilities = [
   {
@@ -116,7 +117,7 @@ const Capabilities: React.FC = () => {
           <p className="mt-4 text-sisSteel max-w-3xl">Specialist services across electric motors, pumps, gearboxes, transformers and industrial components for major mining, power and industrial customers.</p>
         </div>
         <div className="">
-          <a href="/capabilities-statement" className="inline-block bg-sisAccent text-black px-4 py-2 rounded">Download Capabilities Statement</a>
+          <Link href="/capabilities-statement" className="inline-block bg-sisAccent text-sisCharcoal font-semibold px-4 py-2 rounded">Download Capabilities Statement</Link>
         </div>
       </div>
 

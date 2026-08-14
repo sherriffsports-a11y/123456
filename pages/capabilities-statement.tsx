@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Image from 'next/image'
 import Nav from '../components/Nav'
 
 export default function CapabilitiesStatement() {
@@ -7,22 +8,25 @@ export default function CapabilitiesStatement() {
       <Head>
         <title>SIS Equipment Group — Capabilities Statement</title>
         <meta name="description" content="Capabilities statement for SIS Equipment Group — supply, repair, overhaul and sourcing of mining and industrial equipment across Australia." />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </Head>
 
-      <Nav />
+      <div className="print:hidden">
+        <Nav />
+      </div>
 
       <main className="max-w-4xl mx-auto p-6">
         <header className="flex items-start justify-between gap-6">
           <div>
-            <img src="/logo.png" alt="SIS Equipment Group logo" className="h-16 w-auto" />
+            <Image src="/logo.svg" alt="SIS Equipment Group" width={320} height={64} className="h-16 w-auto" priority />
             <h1 className="text-2xl font-bold mt-4">Capabilities Statement</h1>
             <p className="text-sm text-sisSteel mt-2">SIS Equipment Group — Mining & Industrial Equipment Specialists</p>
             <p className="text-sm text-sisSteel">Operated by Sherriff Industry Solutions Pty Ltd · ABN 81 668 877 183</p>
             <p className="text-sm text-sisSteel mt-1">Brisbane, Queensland, Australia · Phone: +61 447 553 353 · info@sherriffindustrysolutions.com</p>
           </div>
 
-          <div className="flex-shrink-0">
-            <button onClick={() => window.print()} className="bg-sisAccent text-black px-4 py-2 rounded">Download / Print</button>
+          <div className="flex-shrink-0 print:hidden">
+            <button type="button" onClick={() => window.print()} className="bg-sisAccent text-sisCharcoal font-semibold px-4 py-2 rounded">Download / Print</button>
           </div>
         </header>
 

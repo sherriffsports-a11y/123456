@@ -9,7 +9,11 @@ module.exports = {
       colors: {
         sisAccent: '#0ea5a4',
         sisCharcoal: '#111214',
-        sisSteel: '#6b7280'
+        // Passes WCAG AA on white (4.8:1).
+        sisSteel: '#6b7280',
+        // sisSteel only reaches 3.9:1 on sisCharcoal, so dark sections use
+        // this lighter tone instead (7.5:1).
+        sisSteelLight: '#9ca3af'
       }
     }
   },
