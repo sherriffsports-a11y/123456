@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import heroImage from '../public/hero-electric-motor.jpg'
 import { ENQUIRY_MAILTO } from '../lib/contact'
 
 const Hero: React.FC = () => {
@@ -7,11 +8,12 @@ const Hero: React.FC = () => {
     <section id="home" className="relative bg-black text-white">
       <div className="absolute inset-0">
         <Image
-          src="https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1920&auto=format&fit=crop"
+          src={heroImage}
           alt=""
           aria-hidden="true"
           fill
           priority
+          placeholder="blur"
           sizes="100vw"
           className="object-cover opacity-80"
         />

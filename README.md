@@ -94,7 +94,9 @@ Set the environment variables above in the host's project settings before deploy
 - **Neither legal page names the operating entity or its ABN**, because those were deliberately
   removed from public display. An Australian privacy policy would normally identify the entity
   responsible for the information it collects, so consider adding it back on `/privacy`.
-- **The hero image is hotlinked from Unsplash.** Replace it with a licensed, self-hosted photograph
-  before going live.
+- **The hero image is AI-generated**, not a photograph of real equipment. It is self-hosted at
+  `public/hero-electric-motor.jpg` and depicts a generic TEFC induction motor. Replacing it with a
+  real photograph of your own workshop or equipment would be more convincing to a technical audience;
+  it is a one-line change in `components/Hero.tsx`.
 - **Large attachments are emailed inline.** For bigger files, upload to object storage and email links
   instead.
