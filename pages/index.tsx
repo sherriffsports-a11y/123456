@@ -4,6 +4,7 @@ import Hero from '../components/Hero'
 import Capabilities from '../components/Capabilities'
 import TransformerFeature from '../components/TransformerFeature'
 import EquipmentSourcing from '../components/EquipmentSourcing'
+import Brands from '../components/Brands'
 import Industries from '../components/Industries'
 import WhyUs from '../components/WhyUs'
 import QuoteForm from '../components/QuoteForm'
@@ -56,6 +57,7 @@ export default function Home() {
         <Capabilities />
         <TransformerFeature />
         <EquipmentSourcing />
+        <Brands />
         <Industries />
         <WhyUs />
         <QuoteForm />
