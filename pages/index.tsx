@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Nav from '../components/Nav'
 import Hero from '../components/Hero'
 import Capabilities from '../components/Capabilities'
+import EquipmentGallery from '../components/EquipmentGallery'
 import TransformerFeature from '../components/TransformerFeature'
 import EquipmentSourcing from '../components/EquipmentSourcing'
 import Brands from '../components/Brands'
@@ -55,6 +56,7 @@ export default function Home() {
       <main className="overflow-x-hidden">
         <Hero />
         <Capabilities />
+        <EquipmentGallery />
         <TransformerFeature />
         <EquipmentSourcing />
         <Brands />
