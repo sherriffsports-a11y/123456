@@ -9,7 +9,7 @@ const equipment = [
   {
     title: 'Electric Motors',
     image: electricMotorImage,
-    alt: 'Industrial three-phase electric motor with a finned frame, terminal box and drive shaft',
+    alt: 'Red-oxide industrial three-phase electric motor with a finned frame, terminal box and drive shaft',
   },
   {
     title: 'Gearboxes',
