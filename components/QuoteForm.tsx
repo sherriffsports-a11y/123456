@@ -1,4 +1,5 @@
 import React, { useId, useState } from 'react'
+import { ENQUIRY_MAILTO, HONEYPOT_FIELD } from '../lib/contact'
 
 type Status = 'idle' | 'sending' | 'sent' | 'error'
 
@@ -35,6 +36,7 @@ const inputClass =
 const QuoteForm: React.FC = () => {
   const [status, setStatus] = useState<Status>('idle')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [showEmailFallback, setShowEmailFallback] = useState(false)
   const fieldPrefix = useId()
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -44,6 +46,7 @@ const QuoteForm: React.FC = () => {
 
     setStatus('sending')
     setErrorMessage(null)
+    setShowEmailFallback(false)
 
     try {
       const res = await fetch('/api/enquiry', { method: 'POST', body: formData })
@@ -54,11 +57,16 @@ const QuoteForm: React.FC = () => {
         return
       }
 
-      const body = await res.json().catch(() => null)
-      setErrorMessage(body?.error ?? 'We could not send your enquiry. Please try again.')
+      // 4xx messages explain what the sender needs to change, so show them.
+      // 5xx messages describe an internal fault and mean nothing to a customer.
+      const body = res.status < 500 ? await res.json().catch(() => null) : null
+      setErrorMessage(body?.error ?? 'We could not send your enquiry right now. Please try again.')
+      // Only a fault on our side warrants pointing them at email instead.
+      setShowEmailFallback(!body?.error)
       setStatus('error')
     } catch {
       setErrorMessage('We could not reach the server. Please check your connection and try again.')
+      setShowEmailFallback(true)
       setStatus('error')
     }
   }
@@ -73,7 +81,7 @@ const QuoteForm: React.FC = () => {
 
         <form
           onSubmit={handleSubmit}
-          className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4"
+          className="relative mt-6 grid grid-cols-1 md:grid-cols-2 gap-4"
           encType="multipart/form-data"
         >
           {textFields.map((field) => (
@@ -145,6 +153,20 @@ const QuoteForm: React.FC = () => {
             </label>
           </div>
 
+          {/* Honeypot: positioned off-screen rather than display:none, since
+              some bots skip hidden inputs. Hidden from assistive technology and
+              removed from the tab order so nobody can reach it by accident. */}
+          <div className="absolute -left-[9999px] w-px overflow-hidden" aria-hidden="true">
+            <label htmlFor={`${fieldPrefix}-${HONEYPOT_FIELD}`}>Do not fill this in</label>
+            <input
+              id={`${fieldPrefix}-${HONEYPOT_FIELD}`}
+              name={HONEYPOT_FIELD}
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+            />
+          </div>
+
           <div className="md:col-span-2 flex flex-wrap items-center gap-4">
             <button
               type="submit"
@@ -160,7 +182,19 @@ const QuoteForm: React.FC = () => {
                   Thanks — we&apos;ve received your enquiry and will respond shortly.
                 </span>
               )}
-              {status === 'error' && <span className="text-red-700">{errorMessage}</span>}
+              {status === 'error' && (
+                <span className="text-red-700">
+                  {errorMessage}
+                  {showEmailFallback && (
+                    <>
+                      {' '}
+                      <a href={ENQUIRY_MAILTO} className="underline">
+                        Send your enquiry by email instead.
+                      </a>
+                    </>
+                  )}
+                </span>
+              )}
             </p>
           </div>
         </form>
