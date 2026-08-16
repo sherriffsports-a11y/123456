@@ -2,16 +2,19 @@ import Head from 'next/head'
 import Nav from '../components/Nav'
 import Hero from '../components/Hero'
 import Capabilities from '../components/Capabilities'
+import EquipmentGallery from '../components/EquipmentGallery'
 import TransformerFeature from '../components/TransformerFeature'
 import EquipmentSourcing from '../components/EquipmentSourcing'
+import Brands from '../components/Brands'
 import Industries from '../components/Industries'
 import WhyUs from '../components/WhyUs'
 import QuoteForm from '../components/QuoteForm'
 import Contact from '../components/Contact'
 import Footer from '../components/Footer'
+import { ENQUIRY_EMAIL } from '../lib/contact'
 
 const description =
-  'SIS Equipment Group provides electric motor, pump, gearbox, transformer, VSD and mining equipment supply, repair, overhaul and sourcing solutions throughout Australia.'
+  'SIS Equipment Group provides electric motor, generator, pump, gearbox, transformer, VSD, cable and mining equipment repair, supply, overhaul and sourcing solutions throughout Australia.'
 
 // Set NEXT_PUBLIC_SITE_URL once the production domain is known so the
 // canonical link and structured data point at real URLs.
@@ -23,17 +26,10 @@ const organizationSchema = {
   name: 'SIS Equipment Group',
   description,
   ...(siteUrl ? { url: siteUrl, logo: `${siteUrl}/logo.svg` } : {}),
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Brisbane',
-    addressRegion: 'QLD',
-    addressCountry: 'AU',
-  },
   contactPoint: [
     {
       '@type': 'ContactPoint',
-      telephone: '+61447553353',
-      email: 'info@sherriffindustrysolutions.com',
+      email: ENQUIRY_EMAIL,
       contactType: 'customer service',
       areaServed: 'AU',
     },
@@ -60,8 +56,10 @@ export default function Home() {
       <main className="overflow-x-hidden">
         <Hero />
         <Capabilities />
+        <EquipmentGallery />
         <TransformerFeature />
         <EquipmentSourcing />
+        <Brands />
         <Industries />
         <WhyUs />
         <QuoteForm />

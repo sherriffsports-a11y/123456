@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { ENQUIRY_MAILTO } from '../lib/contact'
 
 // Root-relative so the anchors also resolve from /capabilities-statement.
 const sections = [
@@ -29,7 +30,7 @@ const Nav: React.FC = () => {
 
         <div className="flex items-center gap-3">
           <Link href="/#request-quote" className="hidden md:inline-block bg-sisAccent text-sisCharcoal font-semibold px-4 py-2 rounded">REQUEST A QUOTE</Link>
-          <a href="tel:+61447553353" className="text-sm border border-sisSteelLight px-3 py-2 rounded hover:bg-white/10">CALL NOW</a>
+          <a href={ENQUIRY_MAILTO} className="text-sm border border-sisSteelLight px-3 py-2 rounded hover:bg-white/10">ENQUIRE</a>
           <button
             type="button"
             onClick={() => setMenuOpen((open) => !open)}

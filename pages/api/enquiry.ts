@@ -1,7 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import formidable, { type Fields, type Files, type File } from 'formidable'
+import formidable, { errors, type Fields, type Files, type File } from 'formidable'
 import { readFile, unlink } from 'fs/promises'
 import path from 'path'
+import { rateLimit } from '../../lib/rateLimit'
+import { HONEYPOT_FIELD } from '../../lib/contact'
 
 // Disable Next's default body parser
 export const config = {
@@ -15,12 +17,33 @@ const MAX_FILES = 10
 // SendGrid rejects messages over 30MB. Base64 inflates payloads by ~4/3, so
 // keep the raw total well under that ceiling.
 const MAX_TOTAL_FILE_SIZE = 20 * 1024 * 1024
+const MAX_FIELDS = 30
+const MAX_FIELDS_SIZE = 100 * 1024
+
+const RATE_LIMIT = 5
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000
+
+function clientKey(req: NextApiRequest): string {
+  const forwarded = req.headers['x-forwarded-for']
+  const raw = Array.isArray(forwarded) ? forwarded[0] : forwarded
+  // The left-most entry is the original client; the rest are proxies.
+  const clientIp = raw?.split(',')[0]?.trim()
+  return clientIp || req.socket.remoteAddress || 'unknown'
+}
 
 async function parseForm(req: NextApiRequest): Promise<{ fields: Fields; files: Files }> {
   const form = formidable({
     maxFiles: MAX_FILES,
     maxFileSize: MAX_FILE_SIZE,
     maxTotalFileSize: MAX_TOTAL_FILE_SIZE,
+    maxFields: MAX_FIELDS,
+    maxFieldsSize: MAX_FIELDS_SIZE,
+    // Browsers still submit a part for a file input the user left empty, and
+    // formidable rejects zero-byte files by default. Accept them here and drop
+    // them in flattenFiles, otherwise every enquiry without an attachment
+    // fails to parse.
+    allowEmptyFiles: true,
+    minFileSize: 0,
   })
   return form.parse(req).then(([fields, files]) => ({ fields, files }))
 }
@@ -30,6 +53,8 @@ function firstValue(value: string[] | undefined): string {
   return (value?.[0] ?? '').trim()
 }
 
+// Returns every parsed file, including the zero-byte placeholders, so the
+// caller can clean all of them up off disk.
 function flattenFiles(files: Files): File[] {
   return Object.values(files)
     .flatMap((entry) => entry ?? [])
@@ -65,11 +90,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: 'Server not configured for email delivery' })
   }
 
+  // Checked before parsing so an abuser cannot make us buffer megabytes of
+  // uploads to disk on a request we are going to reject anyway.
+  const limit = rateLimit(clientKey(req), RATE_LIMIT, RATE_LIMIT_WINDOW_MS)
+  if (!limit.allowed) {
+    res.setHeader('Retry-After', String(limit.retryAfterSeconds))
+    return res
+      .status(429)
+      .json({ error: 'Too many enquiries from this connection. Please try again shortly.' })
+  }
+
   let uploads: File[] = []
 
   try {
     const { fields, files } = await parseForm(req)
     uploads = flattenFiles(files)
+
+    // Hidden field that a person never sees and therefore never fills in.
+    // Report success so bots get no signal that they were caught.
+    if (firstValue(fields[HONEYPOT_FIELD])) {
+      console.warn('Discarded enquiry: honeypot field was populated')
+      return res.status(200).json({ status: 'received' })
+    }
 
     const name = firstValue(fields.name)
     const email = firstValue(fields.email)
@@ -104,7 +146,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ]
 
     const attachments = []
-    for (const file of uploads) {
+    for (const file of uploads.filter((file) => file.size > 0)) {
       try {
         const buffer = await readFile(file.filepath)
         attachments.push({
@@ -133,10 +175,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json({ status: 'received' })
   } catch (err) {
-    // Formidable flags every size/count limit breach with httpCode 413.
-    if ((err as { httpCode?: number }).httpCode === 413) {
+    // Formidable flags every size/count limit breach with httpCode 413, so the
+    // specific code decides whether the text or the files were the problem.
+    const { httpCode, code } = err as { httpCode?: number; code?: number }
+    if (httpCode === 413) {
+      const tooMuchText =
+        code === errors.maxFieldsExceeded || code === errors.maxFieldsSizeExceeded
       return res.status(413).json({
-        error: `Attachments are too large. Send at most ${MAX_FILES} files, each under ${MAX_FILE_SIZE / 1024 / 1024}MB.`,
+        error: tooMuchText
+          ? 'Your enquiry is too long. Please shorten the description and try again.'
+          : `Attachments are too large. Send at most ${MAX_FILES} files, each under ${MAX_FILE_SIZE / 1024 / 1024}MB.`,
       })
     }
 
