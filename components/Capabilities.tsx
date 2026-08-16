@@ -1,5 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
+import workshopMotorImage from '../public/equipment/motor-workshop.jpg'
 
 const capabilities = [
   {
@@ -163,6 +165,23 @@ const Capabilities: React.FC = () => {
             </div>
           </article>
         ))}
+
+        {/* Eight cards across three columns leaves one cell empty on the last
+            row. This fills it; the image stretches to whatever height the row
+            takes so it lines up with the cards beside it. */}
+        <figure className="relative aspect-[4/3] md:aspect-auto md:min-h-64 overflow-hidden bg-white border shadow-sm rounded">
+          <Image
+            src={workshopMotorImage}
+            alt="Pale grey industrial electric motor with a finned frame, terminal box and drive shaft"
+            fill
+            placeholder="blur"
+            sizes="(min-width: 768px) 33vw, 100vw"
+            className="object-cover"
+          />
+          <figcaption className="absolute inset-x-0 bottom-0 bg-white/95 px-6 py-4 text-sm font-semibold text-sisCharcoal">
+            Motor repairs, rewinds and overhauls
+          </figcaption>
+        </figure>
       </div>
     </section>
   )
