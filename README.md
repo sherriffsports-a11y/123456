@@ -117,14 +117,15 @@ Set the environment variables above in the host's project settings before deploy
   responsible for the information it collects, so consider adding it back on `/privacy`.
 - **All equipment imagery is AI-generated**, not photographs of real equipment: the hero
   (`public/hero-electric-motor.jpg`) and the four gallery images (`public/equipment/`). They depict
-  generic plant — a red-oxide TEFC induction motor, a helical gear reducer, an end-suction centrifugal
-  pump and an oil-filled distribution transformer — and deliberately carry no nameplates or brand
-  marks, since fabricated branding would be worse than none.
-- **The hero stands in for a supplied CMG product photo.** A red-oxide CMG motor shot was provided but
-  could not be used directly: it is a square image on a plain white background, so in a wide hero it
-  crops to a middle strip and the white background undermines the white heading text. To use the real
-  photo, it needs the white background removed and compositing onto a dark canvas, or the hero needs
-  restructuring into a two-column layout with the product shot beside the text rather than behind it. Photographs of your own workshop and equipment would be
+  generic plant — a red-oxide TEFC induction motor, an aluminium bevel-helical geared motor, an
+  end-suction centrifugal pump and an oil-filled distribution transformer — and deliberately carry no
+  nameplates or brand marks, since fabricated branding would be worse than none.
+- **Two supplied product photos could not be used and are stood in for.** A red-oxide CMG motor (for
+  the hero) and a pair of aluminium bevel-helical geared motors (for the gallery) were both provided as
+  chat attachments, which are not readable as files from the build environment. Both are also product
+  shots on plain white, so they need the white background removed and compositing onto a dark canvas
+  before they suit these slots — in the hero's case a white background would otherwise sit directly
+  behind white heading text. To use the real photos, commit them to the repo or supply a URL. Photographs of your own workshop and equipment would be
   considerably more convincing to a technical audience, and swapping them in means replacing the files
   in `public/` and adjusting the `alt` text in `components/EquipmentGallery.tsx` and
   `components/Hero.tsx`.

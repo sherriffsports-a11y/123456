@@ -14,7 +14,7 @@ const equipment = [
   {
     title: 'Gearboxes',
     image: gearboxImage,
-    alt: 'Industrial helical gear reducer with a cast housing and keyed output shaft',
+    alt: 'Aluminium bevel-helical geared motor with a hollow-bore output flange and a mounted electric motor',
   },
   {
     title: 'Pumps',
