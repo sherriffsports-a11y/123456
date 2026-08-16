@@ -60,21 +60,41 @@ misconfiguration, while the rest of the site continues to work.
 everything else is optional. Attachments are read from disk, base64-encoded onto the outgoing email,
 and the temporary files are always removed afterwards.
 
-Upload limits are enforced server-side and breaching any of them returns HTTP 413:
+Limits are enforced server-side and breaching any of them returns HTTP 413:
 
 - 10 MB per file
 - 10 files per submission
 - 20 MB total per submission (SendGrid rejects messages over 30 MB, and base64 inflates the payload by roughly a third)
+- 30 fields and 100 KB of field text per submission
 
 Responses:
 
 | Status | Meaning |
 | --- | --- |
-| 200 | Enquiry sent |
+| 200 | Enquiry sent (also returned for a submission caught by the honeypot, deliberately) |
 | 400 | Missing required field or malformed email address |
 | 405 | Method other than POST |
-| 413 | Attachments exceed the limits above |
+| 413 | Attachments or field text exceed the limits above |
+| 429 | Rate limit exceeded; a `Retry-After` header gives the wait in seconds |
 | 500 | Missing SendGrid configuration, or the send failed |
+
+### Abuse protection
+
+The endpoint is public, so it has two cheap defences:
+
+- **Rate limiting** — 5 submissions per IP per 15 minutes, checked *before* the body is parsed so an
+  abuser cannot make the server buffer megabytes of uploads on a request that will be rejected.
+- **A honeypot field** — `enquiryRef` is positioned off-screen, hidden from assistive technology and
+  removed from the tab order, so a person never fills it. When it arrives populated the submission is
+  discarded and a normal `200` is returned, giving bots no signal.
+
+**The rate limiter holds its counters in process memory**, which is a real limitation worth
+understanding: on a serverless host each instance keeps its own counters, so traffic spread across
+instances gets a proportionally higher effective limit, and counters reset on cold start. It stops
+naive scripted abuse, not a determined attacker. For stronger guarantees, move the counters to a
+shared store such as Redis, or apply rate limiting at the edge (Vercel's firewall, Cloudflare). Adding
+a CAPTCHA such as Cloudflare Turnstile is the other obvious step; it was left out here because it
+needs credentials that are not yet configured.
 
 ## Deployment
 
@@ -86,8 +106,9 @@ Set the environment variables above in the host's project settings before deploy
 
 ## Known gaps
 
-- **No spam protection.** The endpoint is unauthenticated and has no rate limiting or CAPTCHA. Add
-  these before publicising the form.
+- **Spam protection is best-effort.** The form has a honeypot and in-memory rate limiting, but no
+  CAPTCHA and no shared rate-limit store — see "Abuse protection" above for what that does and does
+  not cover.
 - **The Privacy Policy and Terms pages have not been reviewed by a lawyer.** They were written to
   describe accurately what this site actually does, but they are not legal advice and should be
   checked by a legal professional before the site goes live.

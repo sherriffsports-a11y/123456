@@ -1,5 +1,5 @@
 import React, { useId, useState } from 'react'
-import { ENQUIRY_MAILTO } from '../lib/contact'
+import { ENQUIRY_MAILTO, HONEYPOT_FIELD } from '../lib/contact'
 
 type Status = 'idle' | 'sending' | 'sent' | 'error'
 
@@ -81,7 +81,7 @@ const QuoteForm: React.FC = () => {
 
         <form
           onSubmit={handleSubmit}
-          className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4"
+          className="relative mt-6 grid grid-cols-1 md:grid-cols-2 gap-4"
           encType="multipart/form-data"
         >
           {textFields.map((field) => (
@@ -151,6 +151,20 @@ const QuoteForm: React.FC = () => {
               />
               Urgent Breakdown Requirement
             </label>
+          </div>
+
+          {/* Honeypot: positioned off-screen rather than display:none, since
+              some bots skip hidden inputs. Hidden from assistive technology and
+              removed from the tab order so nobody can reach it by accident. */}
+          <div className="absolute -left-[9999px] w-px overflow-hidden" aria-hidden="true">
+            <label htmlFor={`${fieldPrefix}-${HONEYPOT_FIELD}`}>Do not fill this in</label>
+            <input
+              id={`${fieldPrefix}-${HONEYPOT_FIELD}`}
+              name={HONEYPOT_FIELD}
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+            />
           </div>
 
           <div className="md:col-span-2 flex flex-wrap items-center gap-4">
